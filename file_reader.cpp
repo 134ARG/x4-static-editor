@@ -28,7 +28,7 @@ namespace File_process {
         if (in.is_open()) {
             while (getline(in, line)) {
                 line_num++;
-                cout << line_num << endl;
+//                cout << line_num << endl;
                 tree->add_file(split(line));
             }
         }

@@ -27,6 +27,7 @@ namespace File_process {
     {
         Bnode *file_hub = find_routine(id).back();
         for (auto i : file_hub->children) {
+            cout << i->identity << endl;
             if (i->identity == id) {
                 return i->file;
             }
@@ -86,6 +87,7 @@ namespace File_process {
 
         while (pos && !pos->has_files) {
             pos = binary_find(pos, real_key);
+            //cout << real_key << "-"<< pos->identity << endl;
             routine.push_back(pos);
         }
 
@@ -95,11 +97,13 @@ namespace File_process {
 
     Bnode *Btree::binary_find(Bnode *node, const string &key)
     {
-        size_t mid = node->children.size()/2;
+        size_t mid = (node->children.size() - 1) / 2;
         size_t start = 0;
         size_t end = node->children.size() - 1;
 
-        while (start == end) {
+
+        // to be refactored
+        while (start != end) {
             if (key > node->children[mid]->identity) {
                 start = mid + 1;
             } else {
@@ -107,7 +111,10 @@ namespace File_process {
             }
             mid = (start + end) / 2;
         }
-
+        bool res = node->children[start]->identity >= key;
+        if (res == 0) cout << res  << endl;
+        bool res2 = node->children[start]->children.back()->identity >= key;
+        if (res2 == 0) cout << res2 << "children invalid." << endl;
         return node->children[start];
     }
 
