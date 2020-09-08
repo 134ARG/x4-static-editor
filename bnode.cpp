@@ -36,7 +36,7 @@ namespace File_process {
 
     bool Bnode::is_oversize(const Bnode *node, size_t size)
     {
-        return size > node->children.size();
+        return size < node->children.size();
     }
 
     size_t Bnode::get_size(const Bnode *node)
