@@ -6,6 +6,11 @@
 #include "vfile.h"
 #include "btree.h"
 
+#define EXTENSION_LEN 4
+#define DATA_LEN 4
+#define DAT_EXT ".dat"
+#define SPACE_C ' '
+
 namespace File_process {
     using namespace std;
 
@@ -17,7 +22,9 @@ namespace File_process {
         static Btree *construct_btree(const string &filename);
 
     private:
-        array<string, 4> split(string str);
+        static array<string, 4> split(string str);
+        static string remove_tail_spaces(string &str);
+        static string dat_path(const string &path);
     };
 }
 
