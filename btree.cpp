@@ -1,6 +1,7 @@
 #include "btree.h"
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 namespace File_process {
     Btree::~Btree()
@@ -11,26 +12,14 @@ namespace File_process {
         }
     }
 
-    void Btree::add_file(Vfile *file_obj)
+    void Btree::add_file(array<string, 4> raw_data)
     {
-
-        if (root) {
-            files_seq.push_back(file_obj);
-            const string &key = file_obj->path;
-            vector<Bnode *> routine = find_routine(key);
-
-            if (is_identity_exceeded(key)) {
-                update_greatest_identity(key, routine);
-            }
-
-            Bnode::add_child(routine.back(), new Bnode(file_obj));
-            for (auto i : routine) {
-                rearrange_by_order(i);
-            }
-        } else {
-            root = new Bnode("");
-            add_file(file_obj);
-        }
+        string path = raw_data[0];
+        long size = stol(raw_data[1]);
+        long offset = current_bytes;
+        unsigned long long time = stoull(raw_data[2]);
+        string md5 = raw_data[3];
+        add_file(new Vfile(path, size, offset, time, md5));
     }
 
 
@@ -46,6 +35,7 @@ namespace File_process {
         return nullptr;
     }
 
+
     Btree *Btree::remove_file(const string &id)
     {
         Bnode *file_node = find_routine(id).back();
@@ -56,6 +46,30 @@ namespace File_process {
         }
 
     }
+
+
+    void Btree::add_file(Vfile *file_obj)
+    {
+        if (root) {
+            files_seq.push_back(file_obj);
+            const string &key = file_obj->path;
+            vector<Bnode *> routine = find_routine(key);
+            current_bytes += file_obj->size;
+
+            if (is_identity_exceeded(key)) {
+                update_greatest_identity(key, routine);
+            }
+
+            Bnode::add_child(routine.back(), new Bnode(file_obj));
+            for (auto i = routine.rbegin(); i < routine.rend(); i++) {
+                rearrange_by_order(*i);
+            }
+        } else {
+            root = new Bnode("");
+            Bnode::add_child(root, new Bnode(file_obj));
+        }
+    }
+
 
     vector<Bnode *>Btree::find_routine(const string &key)
     {
@@ -70,12 +84,8 @@ namespace File_process {
             real_key = key;
         }
 
-        while (pos && Bnode::get_size(pos)) {
-            for (auto i : pos->children) {
-                if (i->identity >= real_key) {
-                    pos = i;
-                }
-            }
+        while (pos && !pos->has_files) {
+            pos = binary_find(pos, real_key);
             routine.push_back(pos);
         }
 
@@ -83,18 +93,54 @@ namespace File_process {
         return routine;
     }
 
+    Bnode *Btree::binary_find(Bnode *node, const string &key)
+    {
+        size_t mid = node->children.size()/2;
+        size_t start = 0;
+        size_t end = node->children.size() - 1;
+
+        while (start == end) {
+            if (key > node->children[mid]->identity) {
+                start = mid + 1;
+            } else {
+                end = mid;
+            }
+            mid = (start + end) / 2;
+        }
+
+        return node->children[start];
+    }
+
+
     void Btree::print_ele()
     {
+        int idx = 1;
         for (auto i : files_seq) {
-            cout << i->path << i->md5_val << endl;
+            cout << fixed << idx++ << " " << i->path << " " << (double)i->size/1e6 << "MB " << (double)i->offset/1e6 << "MB " << i->utc_time << " " << i->md5_val << endl;
         }
+
+        cout << enum_idx(root) << endl;
     }
+
+    int Btree::enum_idx(Bnode *start)
+    {
+        int i = Bnode::get_size(start);
+        if (i) {
+            for (auto j : start->children) {
+                i += enum_idx(j);
+            }
+        }
+
+        return i;
+    }
+
 
     void Btree::rearrange_by_order(Bnode *start)
     {
         if (start && Bnode::is_oversize(start, max_size)) {
             if (!start->father) {
                 start->father = new Bnode("");
+                Bnode::add_child(start->father, root);
                 root = start->father;
             }
             Bnode *left_half = Bnode::split_node(start);
@@ -103,15 +149,18 @@ namespace File_process {
         }
     }
 
+
     string Btree::greatest_identity()
     {
         return root->identity;
     }
 
+
     bool Btree::is_identity_exceeded(const string &key)
     {
         return key > greatest_identity();
     }
+
 
     void Btree::update_greatest_identity(const string &new_id, vector<Bnode *> &routine)
     {
