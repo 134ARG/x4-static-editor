@@ -1,8 +1,9 @@
 #ifndef BTREE_H
 #define BTREE_H
 
-#define DEFAULT_SIZE 5
+#define DEFAULT_SIZE 100
 
+#include <array>
 #include "bnode.h"
 #include "vfile.h"
 
@@ -12,14 +13,15 @@ namespace File_process {
     class Btree
     {
     public:
-        Btree() : root(nullptr), max_size(DEFAULT_SIZE) {}
+        Btree(string path) : root(nullptr), dat_path(path), max_size(DEFAULT_SIZE) {}
         ~Btree();
 
         Bnode *root;
         vector<Vfile *> files_seq;
+        const string dat_path;
         const size_t max_size;
 
-        void add_file(Vfile *file_obj);
+        void add_file(array<string, 4> raw_data);
     //    void add_file(string line);
 
         Vfile *find_file(const string &id);
@@ -30,8 +32,14 @@ namespace File_process {
 
         void print_ele();
 
+        int enum_idx(Bnode *start);
+
     private:
+        long current_bytes = 0;
+
+        void add_file(Vfile *file_obj);
         vector<Bnode *> find_routine(const string &key);
+        Bnode *binary_find(Bnode *node, const string &key);
         void rearrange_by_order(Bnode *start);
         inline string greatest_identity();
         inline bool is_identity_exceeded(const string &key);
