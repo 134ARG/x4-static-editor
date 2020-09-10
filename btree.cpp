@@ -37,14 +37,10 @@ namespace File_process {
     }
 
 
-    Btree *Btree::remove_file(const string &id)
+    void Btree::remove_file(const string &id)
     {
         Bnode *file_node = find_routine(id).back();
-        if (Bnode::remove_child(file_node, id)) {
-            return this;
-        } else {
-            return nullptr;
-        }
+        Bnode::remove_child(file_node, id);
 
     }
 
@@ -93,25 +89,6 @@ namespace File_process {
             }
         } else {
             while (pos && !pos->has_files) {
-    //            pos = binary_find(pos, real_key);
-                //cout << real_key << "-"<< pos->identity << endl;
-
-                // debug starts
-
-//                if (key > pos->identity) throw "ERROR!EXCEEDED!\n";
-//                cout << "-----------debug-----------" << endl;
-//                cout << "pos-main: " << pos->identity << endl;
-//                cout << "size:---------------" << pos->children.size() << endl;
-//                for (auto i : pos->children) {
-//    //                if (i->identity == pos->identity) throw "Invalid CHildrenR!\n";
-//                    cout << "children: " << i->identity << endl;
-//                    cout << (i->identity <= pos->identity) <<" " << i->is_file << endl;
-
-//                }
-//                if (pos->identity != pos->children.back()->identity) throw "Invalid CHildren!\n";
-
-                // ends
-
                 for (size_t i = 0; i < pos->children.size(); i++) {
                     if (pos->children[i]->identity >= key) {
                         pos = pos->children[i];

@@ -15,3 +15,7 @@ HEADERS += \
     btree.h \
     file_reader.h \
     vfile.h
+
+DISTFILES += \
+    LICENSE \
+    README.md

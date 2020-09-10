@@ -27,7 +27,7 @@ namespace File_process {
         Vfile *find_file(const string &id);
     //    Bnode *select_branch(const string &key, const Bnode *start);
 
-        Btree *remove_file(const string &id);
+        void remove_file(const string &id);
     //    Bnode *find_file_hubs(const string &key, Bnode* start);
 
         void print_ele();
