@@ -201,5 +201,12 @@ namespace File_process {
             pos = pos->children.back();
         }
     }
+
+    string Btree::generate_upper_bound(const string &partial)
+    {
+        string upper_bound = partial;
+        *(upper_bound.end()-1) += 1;
+        return upper_bound;
+    }
 }
 

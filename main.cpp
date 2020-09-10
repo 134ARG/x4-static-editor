@@ -41,6 +41,7 @@ int main()
     cout << "Search consumed : " << time_sum << endl;
     cout << fixed << "Average : " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
 
+//    cout << "Test for generating upper bound : " << cat_file->generate_upper_bound("/usr/bin/1") << endl;
 
 
     delete cat_file;

@@ -34,6 +34,8 @@ namespace File_process {
 
         int enum_idx(Bnode *start);
 
+        string generate_upper_bound(const string &partial);
+
     private:
         long current_bytes = 0;
 
@@ -44,6 +46,8 @@ namespace File_process {
         inline string greatest_identity();
         inline bool is_identity_exceeded(const string &key);
         void update_greatest_identity(const string &new_id);
+
+
     };
 }
 
