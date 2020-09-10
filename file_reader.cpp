@@ -9,10 +9,6 @@
 namespace File_process {
     using namespace std;
 
-    File_reader::File_reader()
-    {
-
-    }
 
     // unfinished. to be refactored.
     Btree *File_reader::construct_btree(const string &filename)
