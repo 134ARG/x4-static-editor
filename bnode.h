@@ -35,7 +35,9 @@ namespace File_process {
     //    static bool is_file(Bnode *node);
     //    static bool has_files(Bnode *node);
         static Bnode *get_mid(const Bnode *node);
+        static void update_identity(Bnode *start);
 
+        static bool is_smaller(const Bnode *a, const Bnode *b);
     };
 }
 

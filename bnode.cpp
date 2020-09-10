@@ -15,10 +15,11 @@ namespace File_process {
     {
         father->children.push_back(child);
         child->father = father;
-        sort(father->children.begin(), father->children.end());
+        sort(father->children.begin(), father->children.end(), is_smaller);
         if (child->is_file) {
             father->has_files = true;
         }
+        update_identity(child);
         return father;
     }
 
@@ -49,9 +50,25 @@ namespace File_process {
         return node->children[node->children.size()/2];
     }
 
+    void Bnode::update_identity(Bnode *start)
+    {
+        while (start->father) {
+            if (start->father->identity < start->identity) {
+                start->father->identity = start->identity;
+            }
+            start = start->father;
+        }
+
+    }
+
+    bool Bnode::is_smaller(const Bnode *a, const Bnode *b)
+    {
+        return a->identity <= b->identity;
+    }
+
     Bnode *Bnode::split_node(Bnode *node)
     {
-        Bnode *left_half = new Bnode(get_mid(node)->identity);
+        Bnode *left_half = new Bnode(/*get_mid(node)->identity*/"");
 
         for (size_t i = 0; i <= get_size(node)/2; i++){
             add_child(left_half, node->children.front());
