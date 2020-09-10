@@ -27,7 +27,7 @@ namespace File_process {
     {
         Bnode *file_hub = find_routine(id).back();
         for (auto i : file_hub->children) {
-            cout << i->identity << endl;
+//            cout << i->identity << endl;
             if (i->identity == id) {
                 return i->file;
             }
@@ -54,19 +54,20 @@ namespace File_process {
         if (root) {
             files_seq.push_back(file_obj);
             const string &key = file_obj->path;
-            vector<Bnode *> routine = find_routine(key);
+
             current_bytes += file_obj->size;
 
-            if (is_identity_exceeded(key)) {
-                update_greatest_identity(key, routine);
-            }
+//            if (is_identity_exceeded(key)) {
+//                update_greatest_identity(key);
+//            }
+            vector<Bnode *> routine = find_routine(key);
 
             Bnode::add_child(routine.back(), new Bnode(file_obj));
             for (auto i = routine.rbegin(); i < routine.rend(); i++) {
                 rearrange_by_order(*i);
             }
         } else {
-            root = new Bnode("");
+            root = new Bnode(file_obj->path);
             Bnode::add_child(root, new Bnode(file_obj));
         }
     }
@@ -77,19 +78,52 @@ namespace File_process {
         // to be refactored.
         Bnode *pos = root;
         vector<Bnode *> routine{pos};
-        string real_key;
+//        string real_key;
+
+//        if (is_identity_exceeded(key)) {
+//            real_key = greatest_identity();
+//        } else {
+//            real_key = key;
+//        }
 
         if (is_identity_exceeded(key)) {
-            real_key = greatest_identity();
+            while (pos && !pos->has_files) {
+                pos = pos->children.back();
+                routine.push_back(pos);
+            }
         } else {
-            real_key = key;
+            while (pos && !pos->has_files) {
+    //            pos = binary_find(pos, real_key);
+                //cout << real_key << "-"<< pos->identity << endl;
+
+                // debug starts
+
+//                if (key > pos->identity) throw "ERROR!EXCEEDED!\n";
+//                cout << "-----------debug-----------" << endl;
+//                cout << "pos-main: " << pos->identity << endl;
+//                cout << "size:---------------" << pos->children.size() << endl;
+//                for (auto i : pos->children) {
+//    //                if (i->identity == pos->identity) throw "Invalid CHildrenR!\n";
+//                    cout << "children: " << i->identity << endl;
+//                    cout << (i->identity <= pos->identity) <<" " << i->is_file << endl;
+
+//                }
+//                if (pos->identity != pos->children.back()->identity) throw "Invalid CHildren!\n";
+
+                // ends
+
+                for (size_t i = 0; i < pos->children.size(); i++) {
+                    if (pos->children[i]->identity >= key) {
+                        pos = pos->children[i];
+                        break;
+                    }
+
+//                    if (pos->children[i] == pos->children.back()) cout << "ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!" << endl;
+                }
+                routine.push_back(pos);
+            }
         }
 
-        while (pos && !pos->has_files) {
-            pos = binary_find(pos, real_key);
-            //cout << real_key << "-"<< pos->identity << endl;
-            routine.push_back(pos);
-        }
 
         // to be refactored
         return routine;
@@ -103,18 +137,31 @@ namespace File_process {
 
 
         // to be refactored
-        while (start != end) {
-            if (key > node->children[mid]->identity) {
-                start = mid + 1;
-            } else {
-                end = mid;
+//        while (start != end) {
+//            if (key > node->children[mid]->identity) {
+//                start = mid + 1;
+//            } else {
+//                end = mid;
+//            }
+//            mid = (start + end) / 2;
+//        }
+
+        for (start = 0; start <= end; start++) {
+            if (key <= node->children[start]->identity) {
+                break;
             }
-            mid = (start + end) / 2;
+            if(start == end) cout << "ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!" << endl;
         }
-        bool res = node->children[start]->identity >= key;
-        if (res == 0) cout << res  << endl;
-        bool res2 = node->children[start]->children.back()->identity >= key;
-        if (res2 == 0) cout << res2 << "children invalid." << endl;
+        if (start > end) start = end;
+//        bool res = node->children[start]->identity >= key;
+//        bool res2 = node->children[start]->children.back()->identity >= key;
+//        if (!res && ! res2){
+//            cout << "both invalid" << endl;
+//            cout << node->children[start]->identity << endl;
+//            cout << node->children[start]->children.back()->identity << endl;
+//        } else if (!res2) {
+//            cout << endl << endl << "children invalid" << endl;
+//        }
         return node->children[start];
     }
 
@@ -142,16 +189,16 @@ namespace File_process {
     }
 
 
-    void Btree::rearrange_by_order(Bnode *start)
+    void Btree::rearrange_by_order(Bnode *node)
     {
-        if (start && Bnode::is_oversize(start, max_size)) {
-            if (!start->father) {
-                start->father = new Bnode("");
-                Bnode::add_child(start->father, root);
-                root = start->father;
+        if (node && Bnode::is_oversize(node, max_size)) {
+            if (!node->father) {
+                node->father = new Bnode(node->identity);
+                Bnode::add_child(node->father, node);
+                root = node->father;
             }
-            Bnode *left_half = Bnode::split_node(start);
-            Bnode::add_child(start->father, left_half);
+            Bnode *left_half = Bnode::split_node(node);
+            Bnode::add_child(node->father, left_half);
 
         }
     }
@@ -169,10 +216,12 @@ namespace File_process {
     }
 
 
-    void Btree::update_greatest_identity(const string &new_id, vector<Bnode *> &routine)
+    void Btree::update_greatest_identity(const string &new_id)
     {
-        for (auto i : routine) {
-            i->identity = new_id;
+        Bnode *pos = root;
+        while (!pos->is_file) {
+            pos->identity = new_id;
+            pos = pos->children.back();
         }
     }
 }

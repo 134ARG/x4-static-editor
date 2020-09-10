@@ -1,7 +1,7 @@
 #ifndef BTREE_H
 #define BTREE_H
 
-#define DEFAULT_SIZE 100
+#define DEFAULT_SIZE 20
 
 #include <array>
 #include "bnode.h"
@@ -43,7 +43,7 @@ namespace File_process {
         void rearrange_by_order(Bnode *start);
         inline string greatest_identity();
         inline bool is_identity_exceeded(const string &key);
-        void update_greatest_identity(const string &new_id, vector<Bnode *> &routine);
+        void update_greatest_identity(const string &new_id);
     };
 }
 
