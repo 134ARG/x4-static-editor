@@ -34,6 +34,7 @@ namespace File_process {
             }
         }
 
+        in.close();
         return tree;
     }
 
