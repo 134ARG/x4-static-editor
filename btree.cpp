@@ -191,7 +191,7 @@ namespace File_process {
 
     void Btree::rearrange_by_order(Bnode *node)
     {
-        if (node && Bnode::is_oversize(node, max_size)) {
+        if (node && Bnode::is_oversize(node, order)) {
             if (!node->father) {
                 node->father = new Bnode(node->identity);
                 Bnode::add_child(node->father, node);

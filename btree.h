@@ -1,7 +1,7 @@
 #ifndef BTREE_H
 #define BTREE_H
 
-#define DEFAULT_SIZE 20
+#define BTREE_ORDER 20
 
 #include <array>
 #include "bnode.h"
@@ -13,13 +13,13 @@ namespace File_process {
     class Btree
     {
     public:
-        Btree(string path) : root(nullptr), dat_path(path), max_size(DEFAULT_SIZE) {}
+        Btree(string path) : root(nullptr), dat_path(path), order(BTREE_ORDER) {}
         ~Btree();
 
         Bnode *root;
         vector<Vfile *> files_seq;
         const string dat_path;
-        const size_t max_size;
+        const size_t order;
 
         void add_file(array<string, 4> raw_data);
     //    void add_file(string line);
