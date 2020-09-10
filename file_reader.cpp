@@ -3,8 +3,8 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
-
 #include <iostream>
+
 
 namespace File_process {
     using namespace std;
@@ -29,6 +29,7 @@ namespace File_process {
             while (getline(in, line)) {
                 line_num++;
 //                cout << line_num << endl;
+                cout << "Pareparing to add file : " << line << endl;
                 tree->add_file(split(line));
             }
         }
