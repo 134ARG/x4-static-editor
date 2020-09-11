@@ -59,8 +59,8 @@ namespace File_process {
     void Btree::remove_file(const string &id)
     {
         Bnode *file_node = find_hub(id);
-        Bnode::remove_child(file_node, id);
-        Vfile::remove_from_llist(Bnode::find_node(file_node, id)->file);
+        file_node->remove_child(id);
+        Vfile::remove_from_llist(file_node->find_node(id)->file);
 
     }
 
@@ -80,9 +80,9 @@ namespace File_process {
                 files_hub =  find_hub(key);
             }
 
-            size_t file_node_idx = Bnode::add_child(files_hub, new Bnode(file));
+            size_t file_node_idx = files_hub->add_child(new Bnode(file));
 
-            if (Bnode::get_size(files_hub) > 1) {
+            if (files_hub->get_size() > 1) {
                 if (file_node_idx != files_hub->children.size() - 1) {
                     Vfile::insert_to_llist(file, nullptr, files_hub->children[file_node_idx+1]->file);
                 } else {
@@ -93,7 +93,7 @@ namespace File_process {
             update_node_chain_after_add(files_hub);
         } else {
             root = new Bnode(file->path);
-            Bnode::add_child(root, new Bnode(file));
+            root->add_child(new Bnode(file));
         }
     }
 
@@ -166,7 +166,7 @@ namespace File_process {
 
     int Btree::enum_index_node(Bnode *start)
     {
-        int i = Bnode::get_size(start);
+        int i = start->get_size();
         if (i) {
             for (auto j : start->children) {
                 i += enum_index_node(j);
@@ -179,14 +179,14 @@ namespace File_process {
 
     void Btree::update_node_chain_after_add(Bnode *node)
     {
-        while (node && Bnode::is_oversize(node, order)) {
+        while (node && node->is_oversize(order)) {
             if (!node->father) {
                 node->father = new Bnode(node->identity);
-                Bnode::add_child(node->father, node);
+                node->father->add_child(node);
                 root = node->father;
             }
-            Bnode *left_half = Bnode::split_node(node);
-            Bnode::add_child(node->father, left_half);
+            Bnode *left_half = node->split_node();
+            node->father->add_child(left_half);
 
             node = node->father;
         }
