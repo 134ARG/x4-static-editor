@@ -14,10 +14,11 @@ namespace File_process {
     class Btree
     {
     public:
-        Btree(string path) : root(nullptr), dat_path(path), order(BTREE_ORDER) {}
+        Btree(string path) : dat_path(path), order(BTREE_ORDER) {}
+        Btree(string path, size_t o) : dat_path(path), order(o) {}
         ~Btree();
 
-        Bnode *root;
+        Bnode *root = nullptr;
         vector<Vfile *> files_seq;
         const string dat_path;
         const size_t order;

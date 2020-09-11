@@ -39,11 +39,16 @@ namespace File_process {
 
     array<Vfile *, 2> Btree::find_range(const string &id_start, const string &id_end)
     {
-        Vfile *start = find_hub(id_start)->get_smallest_file();
-        Vfile *end = find_hub(id_end)->get_greatest_file();
+        if (id_start > id_end) {
+            return array<Vfile *, 2>{};
+        } else {
+            Vfile *start = find_hub(id_start)->get_smallest_file();
+            Vfile *end = find_hub(id_end)->get_greatest_file();
 
-        return array<Vfile *, 2>{start, end};
+            return array<Vfile *, 2>{start, end};
+        }
     }
+
 
     array<Vfile *, 2> Btree::find_partial(const string &partial)
     {
