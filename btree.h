@@ -1,7 +1,7 @@
 #ifndef BTREE_H
 #define BTREE_H
 
-#define BTREE_ORDER 20
+#define DEFAULT_BTREE_ORDER 20
 
 #include <array>
 #include <vector>
@@ -14,7 +14,7 @@ namespace File_process {
     class Btree
     {
     public:
-        Btree(string path) : dat_path(path), order(BTREE_ORDER) {}
+        Btree(string path) : dat_path(path), order(DEFAULT_BTREE_ORDER) {}
         Btree(string path, size_t o) : dat_path(path), order(o) {}
         ~Btree();
 
@@ -24,15 +24,10 @@ namespace File_process {
         const size_t order;
 
         void add_file(array<string, 4> raw_data);
-    //    void add_file(string line);
-
         Vfile *find_file(const string &id);
         array<Vfile *, 2> find_range(const string &id_start, const string &id_end);
         array<Vfile *, 2> find_partial(const string &partial);
-    //    Bnode *select_branch(const string &key, const Bnode *start);
-
         void remove_file(const string &id);
-    //    Bnode *find_file_hubs(const string &key, Bnode* start);
 
 //        void print_ele();
 
