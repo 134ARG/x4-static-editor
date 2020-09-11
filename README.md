@@ -5,5 +5,5 @@ Qt creator proj.
 To be implemented:
 
 
-1. Range find
-2. Partial find
+1. file remove (safely)
+2. file content fetch
