@@ -33,7 +33,7 @@ namespace File_process {
         void remove_file(const string &id);
     //    Bnode *find_file_hubs(const string &key, Bnode* start);
 
-        void print_ele();
+//        void print_ele();
 
         int enum_index_node(Bnode *start);
 
@@ -45,7 +45,7 @@ namespace File_process {
         void add_file(Vfile *file_obj);
         Bnode *find_hub(const string &key);
 
-        Bnode *binary_find(Bnode *node, const string &key);
+//        Bnode *binary_find(Bnode *node, const string &key);
 
         void update_node_chain_after_add(Bnode *start);
         bool update_routine_after_del(Bnode *start);

@@ -149,15 +149,15 @@ namespace File_process {
 //    }
 
 
-    void Btree::print_ele()
-    {
-        int idx = 1;
-        for (auto i : files_seq) {
-            cout << fixed << idx++ << " " << i->path << " " << (double)i->size/1e6 << "MB " << (double)i->offset/1e6 << "MB " << i->utc_time << " " << i->md5_val << endl;
-        }
+//    void Btree::print_ele()
+//    {
+//        int idx = 1;
+//        for (auto i : files_seq) {
+//            cout << fixed << idx++ << " " << i->path << " " << (double)i->size/1e6 << "MB " << (double)i->offset/1e6 << "MB " << i->utc_time << " " << i->md5_val << endl;
+//        }
 
-        cout << enum_index_node(root) << endl;
-    }
+//        cout << enum_index_node(root) << endl;
+//    }
 
     int Btree::enum_index_node(Bnode *start)
     {
@@ -197,7 +197,12 @@ namespace File_process {
 //            return true;
 //        } else {
 //            return false;
-//        }
+        //        }
+    }
+
+    bool Btree::update_routine_after_del(Bnode *start)
+    {
+
     }
 
 
