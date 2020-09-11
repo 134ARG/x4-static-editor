@@ -126,53 +126,6 @@ namespace File_process {
         return pos;
     }
 
-//    Bnode *Btree::binary_find(Bnode *node, const string &key)
-//    {
-//        size_t mid = (node->children.size() - 1) / 2;
-//        size_t start = 0;
-//        size_t end = node->children.size() - 1;
-
-
-//        // to be refactored
-////        while (start != end) {
-////            if (key > node->children[mid]->identity) {
-////                start = mid + 1;
-////            } else {
-////                end = mid;
-////            }
-////            mid = (start + end) / 2;
-////        }
-
-//        for (start = 0; start <= end; start++) {
-//            if (key <= node->children[start]->identity) {
-//                break;
-//            }
-//            if(start == end) cout << "ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!ERROR!" << endl;
-//        }
-//        if (start > end) start = end;
-////        bool res = node->children[start]->identity >= key;
-////        bool res2 = node->children[start]->children.back()->identity >= key;
-////        if (!res && ! res2){
-////            cout << "both invalid" << endl;
-////            cout << node->children[start]->identity << endl;
-////            cout << node->children[start]->children.back()->identity << endl;
-////        } else if (!res2) {
-////            cout << endl << endl << "children invalid" << endl;
-////        }
-//        return node->children[start];
-//    }
-
-
-//    void Btree::print_ele()
-//    {
-//        int idx = 1;
-//        for (auto i : files_seq) {
-//            cout << fixed << idx++ << " " << i->path << " " << (double)i->size/1e6 << "MB " << (double)i->offset/1e6 << "MB " << i->utc_time << " " << i->md5_val << endl;
-//        }
-
-//        cout << enum_index_node(root) << endl;
-//    }
-
     int Btree::enum_index_node(Bnode *start)
     {
         int i = start->get_size();
