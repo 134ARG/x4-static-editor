@@ -54,17 +54,27 @@ int main()
         } else if (k->prev == nullptr || k->prev == 0) {
             cout << "Null prev found." << endl;
             cout << k->path << endl;
+        } else if (k->path > k->next->path) {
+            throw "error";
         }
     }
 
     // partial find test
-    auto result_bound = cat_file->find_partial("assets/structures/buildmodule/");
+    auto result_bound = cat_file->find_partial("a");
     cout << "Partial match results : " << endl;
     int idx = 1;
-    for (auto i = result_bound[0]; i != result_bound[1]; i = i->next) {
+    for (auto i = result_bound[0]; i && i->path <= result_bound[1]->path; i = i->next) {
         cout << idx++ << " : " << i->path << " " << i->size << " " << i->offset << endl;
     }
 
+    int num = 0;
+    File_process::Vfile *c = cat_file->head;
+    while (c != nullptr) {
+        num++;
+        c = c->next;
+    }
+
+    cout << num << endl;
 
     // overall report.
     cout << "Read time :" << time.count() << endl;

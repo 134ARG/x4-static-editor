@@ -10,7 +10,7 @@ namespace File_process {
         }
     }
 
-    size_t Bnode::add_child(Bnode *child)
+    vector<Bnode *>::const_iterator Bnode::add_child(Bnode *child)
     {
         child->father = this;
         update_identity(child);             // to be refactored.
@@ -24,7 +24,7 @@ namespace File_process {
         }
         if (child->is_file) has_files = true;
 
-        return idx;
+        return children.cbegin() + idx;
 
 
     //        sort(father->children.begin(), father->children.end(), is_smaller);
@@ -103,6 +103,20 @@ namespace File_process {
         }
 
         return nullptr;
+    }
+
+    Bnode *Bnode::find_floor(const string &id)
+    {
+        auto i = children.cbegin();
+        while (i != children.cend() && (*i)->identity < id) {
+            i++;
+        }
+
+        if (i == children.cend()) {
+            return nullptr;
+        } else {
+            return *i;
+        }
     }
 
     Vfile *Bnode::get_smallest_file()

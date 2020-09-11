@@ -16,7 +16,7 @@ namespace File_process {
         string line;
         string tmp;
         vector<string> entries;
-        Btree *tree = new Btree(dat_path(filename));
+        Btree *tree = new Btree(dat_path(filename), 5000);
 
         int line_num = 0;
         ifstream in;
@@ -25,7 +25,7 @@ namespace File_process {
             while (getline(in, line)) {
                 line_num++;
 //                cout << line_num << endl;
-                cout << "Pareparing to add file : " << line << endl;
+//                cout << "Pareparing to add file : " << line << endl;
                 tree->add_file(split(line));
             }
         }

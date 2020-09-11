@@ -2,13 +2,18 @@
 
 void File_process::Vfile::insert_to_llist(Vfile *file, Vfile *front, Vfile *behind)
 {
-    if (front) {
+    if (front && !behind) {
         file->prev = front;
         file->next = front->next;
         front->next = file;
-    } else if (behind) {
+    } else if (behind && !front) {
         file->next = behind;
         file->prev = behind->prev;
+        behind->prev = file;
+    } else if (front && behind){
+        file->prev = front;
+        file->next = behind;
+        front->next = file;
         behind->prev = file;
     } else {
         throw "Both parameters are nullptr.";

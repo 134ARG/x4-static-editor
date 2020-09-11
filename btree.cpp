@@ -17,7 +17,7 @@ namespace File_process {
     {
         string path = raw_data[0];
         long size = stol(raw_data[1]);
-        long offset = current_bytes;
+        long offset = dat_size;
         unsigned long long time = stoull(raw_data[2]);
         string md5 = raw_data[3];
         add_file(new Vfile(path, size, offset, time, md5));
@@ -26,7 +26,7 @@ namespace File_process {
 
     Vfile *Btree::find_file(const string &id)
     {
-        Bnode *file_hub = find_hub(id);
+        Bnode *file_hub = find_files_hub(id);
         for (auto i : file_hub->children) {
 //            cout << i->identity << endl;
             if (i->identity == id) {
@@ -39,11 +39,15 @@ namespace File_process {
 
     array<Vfile *, 2> Btree::find_range(const string &id_start, const string &id_end)
     {
-        if (id_start > id_end) {
+        cout << id_end << endl;
+        if (id_start > id_end || id_start > root->identity) {
             return array<Vfile *, 2>{};
-        } else {
-            Vfile *start = find_hub(id_start)->get_smallest_file();
-            Vfile *end = find_hub(id_end)->get_greatest_file();
+        } else if (id_end > root->identity) {
+            return find_range(id_start, root->identity);
+        }
+        else {
+            Vfile *start = find_files_hub(id_start)->find_floor(id_start)->file;
+            Vfile *end = find_files_hub(id_end)->find_floor(id_end)->file;
 
             return array<Vfile *, 2>{start, end};
         }
@@ -58,7 +62,7 @@ namespace File_process {
 
     void Btree::remove_file(const string &id)
     {
-        Bnode *file_node = find_hub(id);
+        Bnode *file_node = find_files_hub(id);
         file_node->remove_child(id);
         Vfile::remove_from_llist(file_node->find_node(id)->file);
 
@@ -68,7 +72,7 @@ namespace File_process {
     void Btree::add_file(Vfile *file)
     {
         files_seq.push_back(file);
-        current_bytes += file->size;
+        dat_size += file->size;
 
         if (root) {
             const string &key = file->path;
@@ -77,16 +81,18 @@ namespace File_process {
             if (is_identity_exceeded(key)) {
                 files_hub = update_greatest_identity_to_hub(key);
             } else {
-                files_hub =  find_hub(key);
+                files_hub =  find_files_hub(key);
             }
 
-            size_t file_node_idx = files_hub->add_child(new Bnode(file));
+            auto iter = files_hub->add_child(new Bnode(file));
 
             if (files_hub->get_size() > 1) {
-                if (file_node_idx != files_hub->children.size() - 1) {
-                    Vfile::insert_to_llist(file, nullptr, files_hub->children[file_node_idx+1]->file);
+                if (iter == files_hub->children.cbegin()) {
+                    Vfile::insert_to_llist(file, nullptr, (*(iter+1))->file);
+                } else if (iter == files_hub->children.cend() - 1) {
+                    Vfile::insert_to_llist(file, (*(iter-1))->file, nullptr);
                 } else {
-                    Vfile::insert_to_llist(file, files_hub->children[file_node_idx-1]->file, nullptr);
+                    Vfile::insert_to_llist(file, (*(iter-1))->file, (*(iter+1))->file);
                 }
             }
 
@@ -95,10 +101,13 @@ namespace File_process {
             root = new Bnode(file->path);
             root->add_child(new Bnode(file));
         }
+
+        if (file->next == nullptr) tail = file;
+        if (file->prev == nullptr) head = file;
     }
 
 
-    Bnode *Btree::find_hub(const string &key)
+    Bnode *Btree::find_files_hub(const string &key)
     {
         Bnode *pos = root;
 
@@ -108,12 +117,12 @@ namespace File_process {
                 iter++;
             }
             if (iter == pos->children.cend()) {
-                return *iter;
+                throw "Exceeded identity.";
             } else {
                 pos = *iter;
             }
         }
-
+        if (!pos->has_files) throw "error";
         return pos;
     }
 
@@ -207,7 +216,7 @@ namespace File_process {
 
     bool Btree::update_routine_after_del(Bnode *start)
     {
-
+        return true;
     }
 
 
@@ -229,7 +238,7 @@ namespace File_process {
         return pos->father;
     }
 
-    string Btree::generate_upper_bound(const string &partial)
+    const string Btree::generate_upper_bound(const string &partial)
     {
         string upper_bound = partial;
         *(upper_bound.end()-1) += 1;

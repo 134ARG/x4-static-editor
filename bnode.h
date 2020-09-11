@@ -13,7 +13,7 @@ namespace File_process {
     public:
         Bnode(string id) : identity(id) {}
         Bnode(Vfile *file_obj) : identity(file_obj->path), is_file(true), file(file_obj) {}
-        Bnode(Bnode *node) : identity(node->identity), has_files(node->has_files), is_file(node->is_file) {}
+//        Bnode(Bnode *node) : identity(node->identity), has_files(node->has_files), is_file(node->is_file) {}
     //    Bnode(Bnode *child) : identity(child->file->path), children{child} { add_child(this, child); }
         ~Bnode();
 
@@ -24,7 +24,7 @@ namespace File_process {
         Vfile *file = nullptr;
         vector<Bnode *> children;
 
-        size_t add_child(Bnode *child);
+        vector<Bnode *>::const_iterator add_child(Bnode *child);
         Bnode *remove_child(const string identity);
         Bnode *remove_children(size_t i, size_t j);
         bool is_oversize(size_t size);
@@ -32,6 +32,7 @@ namespace File_process {
         Bnode *split_node();
         Bnode *find_node(string identity);
 
+        Bnode *find_floor(const string &id);
         Vfile *get_smallest_file();
         Vfile *get_greatest_file();
 

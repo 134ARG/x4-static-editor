@@ -20,6 +20,8 @@ namespace File_process {
 
         Bnode *root = nullptr;
         vector<Vfile *> files_seq;
+        Vfile *head = nullptr;
+        Vfile *tail = nullptr;
         const string dat_path;
         const size_t order;
 
@@ -33,18 +35,18 @@ namespace File_process {
 
         int enum_index_node(Bnode *start);
 
-        string generate_upper_bound(const string &partial);
-
     private:
-        long current_bytes = 0;
+        long dat_size = 0;
 
         void add_file(Vfile *file_obj);
-        Bnode *find_hub(const string &key);
+        Bnode *find_files_hub(const string &key);
 
 //        Bnode *binary_find(Bnode *node, const string &key);
 
         void update_node_chain_after_add(Bnode *start);
         bool update_routine_after_del(Bnode *start);
+
+        const string generate_upper_bound(const string &partial);
 
         inline bool is_identity_exceeded(const string &key);
         Bnode *update_greatest_identity_to_hub(const string &new_id);
