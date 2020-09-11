@@ -26,11 +26,14 @@ namespace File_process {
 
         static size_t add_child(Bnode *father, Bnode *child);
         static Bnode *remove_child(Bnode *father, const string identity);
+        static Bnode *remove_children(Bnode *father, size_t i, size_t j);
         static bool is_oversize(const Bnode *node, size_t size);
         static size_t get_size(const Bnode *node);
         static Bnode *split_node(Bnode *node);
         static Bnode *find_node(Bnode *node, string identity);
 
+        Vfile *get_smallest_file();
+        Vfile *get_greatest_file();
 
 
     //    static bool is_file(Bnode *node);
@@ -38,7 +41,7 @@ namespace File_process {
         static Bnode *get_mid(const Bnode *node);
         static void update_identity(Bnode *start);
 
-        static bool is_greater_or_eq(const Bnode *a, const Bnode *b);
+        static bool is_greater(const Bnode *a, const Bnode *b);
     };
 }
 

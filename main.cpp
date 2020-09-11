@@ -22,52 +22,60 @@ int main()
     auto time  = chrono::duration_cast<chrono::milliseconds>(end - start);
     //i->print_ele();
 
+
+
+    // Search test - reverse order.
     cout << "File sreach test starts." << endl;
     vector<File_process::Vfile *> search_test = cat_file->files_seq;
-//    reverse(search_test.begin(), search_test.end());
-
-
+    reverse(search_test.begin(), search_test.end());
+    int search_successes = 0;
     for (auto j : search_test) {
-//        cout << "Finding file : " <<  j->path << endl;
+        cout << endl << "Finding file : " <<  j->path << endl;
 
         auto start2 = chrono::steady_clock::now();
         auto file = cat_file->find_file(j->path);
         auto end2 = chrono::steady_clock::now();
         auto time2  = chrono::duration_cast<chrono::milliseconds>(end2 - start2);
 
+        if (file->path == j->path) search_successes++;
 
-//        cout << "time: " << time2.count() << endl;
         time_sum += time2.count();
         cout << "Result : " << file->path << " " << file->size << " " << file->offset << " " << file->utc_time << endl;
     }
 
-    File_process::Vfile *current = cat_file->files_seq.front();
-    int idx = 1;
-    while (current->next != nullptr) {
-//        cout << idx++ << endl;
-        if (current->path > current->next->path) {
-            cout << "ERRORERRORERROR!" << endl;
-        }
-        current = current->next;
-    }
 
+
+    // linked list test.
     for (auto k : cat_file->files_seq) {
         if (k->next == nullptr) {
 
             cout << "Null next found." << endl;
             cout << k->path << endl;
-        } else if (k->prev == nullptr) {
+        } else if (k->prev == nullptr || k->prev == 0) {
             cout << "Null prev found." << endl;
             cout << k->path << endl;
         }
     }
+
+    // partial find test
+    auto result_bound = cat_file->find_partial("assets/structures/buildmodule/");
+    cout << "Partial match results : " << endl;
+    int idx = 1;
+    for (auto i = result_bound[0]; i != result_bound[1]; i = i->next) {
+        cout << idx++ << " : " << i->path << " " << i->size << " " << i->offset << endl;
+    }
+
+
+    // overall report.
     cout << "Read time :" << time.count() << endl;
-    cout << "Search consumed : " << time_sum << endl;
-    cout << fixed << "Average : " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
+    cout << "All serach trials : " << cat_file->files_seq.size() << endl;
+    cout << "Successful : " << search_successes << endl;
+    cout << "Reverse search time : " << time_sum << endl;
+    cout << fixed << "Average search time: " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
+    cout << "Partial match found : " << idx-1 << " results." << endl;
 
-//    cout << "Test for generating upper bound : " << cat_file->generate_upper_bound("/usr/bin/1") << endl;
-
-
+    cout << "Finished. Enter to exit." << endl;
+    cin.get();
     delete cat_file;
     return 0;
 }

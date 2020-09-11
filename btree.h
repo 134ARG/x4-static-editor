@@ -4,6 +4,7 @@
 #define BTREE_ORDER 20
 
 #include <array>
+#include <vector>
 #include "bnode.h"
 #include "vfile.h"
 
@@ -25,6 +26,8 @@ namespace File_process {
     //    void add_file(string line);
 
         Vfile *find_file(const string &id);
+        array<Vfile *, 2> find_range(const string &id_start, const string &id_end);
+        array<Vfile *, 2> find_partial(const string &partial);
     //    Bnode *select_branch(const string &key, const Bnode *start);
 
         void remove_file(const string &id);
@@ -32,7 +35,7 @@ namespace File_process {
 
         void print_ele();
 
-        int enum_idx(Bnode *start);
+        int enum_index_node(Bnode *start);
 
         string generate_upper_bound(const string &partial);
 
@@ -40,12 +43,15 @@ namespace File_process {
         long current_bytes = 0;
 
         void add_file(Vfile *file_obj);
-        vector<Bnode *> find_routine(const string &key);
+        Bnode *find_hub(const string &key);
+
         Bnode *binary_find(Bnode *node, const string &key);
-        void rearrange_by_order(Bnode *start);
-        inline string greatest_identity();
+
+        void update_node_chain_after_add(Bnode *start);
+        bool update_routine_after_del(Bnode *start);
+
         inline bool is_identity_exceeded(const string &key);
-        void update_greatest_identity(const string &new_id);
+        Bnode *update_greatest_identity_to_hub(const string &new_id);
 
 
     };

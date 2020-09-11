@@ -14,30 +14,16 @@ namespace File_process {
     {
         child->father = father;
         update_identity(child);
+        father->children.push_back(child);
 
-//        father->children.push_back(child);
-        size_t idx = 0;
-        while (get_size(father)
-               && idx < father->children.size()
-               && is_greater_or_eq(child, father->children[idx])) {
-            idx++;
+        size_t idx = get_size(father) - 1;
+        while (idx
+               && is_greater(father->children[idx-1], father->children[idx])) {
+            swap(father->children[idx-1], father->children[idx]);
+            idx--;
         }
-//            if (child->is_file) {
-//                father->has_files = true;
-
-//                if (idx == father->children.end()) {
-//                    Vfile::insert(child->file, (*(idx-1))->file, nullptr);
-//                } else {
-//                    Vfile::insert(child->file, nullptr, (*idx)->file);
-//                }
-//            }
-
-//        } else {
-//            if (child->is_file) father->has_files = true;
-
-        father->children.insert(father->children.begin() + idx, child);
-
         if (child->is_file) father->has_files = true;
+
         return idx;
 
 
@@ -54,6 +40,15 @@ namespace File_process {
             }
         }
         return nullptr;
+    }
+
+    Bnode *Bnode::remove_children(Bnode *father, size_t i, size_t j)
+    {
+        if (father && i < get_size(father) && j < get_size(father)) {
+            father->children.erase(father->children.cbegin()+i, father->children.cbegin()+j);
+        }
+
+        return father;
     }
 
     bool Bnode::is_oversize(const Bnode *node, size_t size)
@@ -82,9 +77,9 @@ namespace File_process {
 
     }
 
-    bool Bnode::is_greater_or_eq(const Bnode *a, const Bnode *b)
+    bool Bnode::is_greater(const Bnode *a, const Bnode *b)
     {
-        return a->identity >= b->identity;
+        return a->identity > b->identity;
     }
 
     Bnode *Bnode::split_node(Bnode *node)
@@ -108,6 +103,26 @@ namespace File_process {
         }
 
         return nullptr;
+    }
+
+    Vfile *Bnode::get_smallest_file()
+    {
+        Bnode * file_node = this;
+        while (!file_node->is_file) {
+            file_node = file_node->children.front();
+        }
+
+        return file_node->file;
+    }
+
+    Vfile *Bnode::get_greatest_file()
+    {
+        Bnode * file_node = this;
+        while (!file_node->is_file) {
+            file_node = file_node->children.back();
+        }
+
+        return file_node->file;
     }
 
 }
