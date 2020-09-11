@@ -1,5 +1,4 @@
 #include "bnode.h"
-#include <algorithm>
 
 namespace File_process {
     using namespace std;
@@ -11,16 +10,38 @@ namespace File_process {
         }
     }
 
-    Bnode *Bnode::add_child(Bnode *father, Bnode *child)
+    size_t Bnode::add_child(Bnode *father, Bnode *child)
     {
-        father->children.push_back(child);
         child->father = father;
-        sort(father->children.begin(), father->children.end(), is_smaller);
-        if (child->is_file) {
-            father->has_files = true;
-        }
         update_identity(child);
-        return father;
+
+//        father->children.push_back(child);
+        size_t idx = 0;
+        while (get_size(father)
+               && idx < father->children.size()
+               && is_greater_or_eq(child, father->children[idx])) {
+            idx++;
+        }
+//            if (child->is_file) {
+//                father->has_files = true;
+
+//                if (idx == father->children.end()) {
+//                    Vfile::insert(child->file, (*(idx-1))->file, nullptr);
+//                } else {
+//                    Vfile::insert(child->file, nullptr, (*idx)->file);
+//                }
+//            }
+
+//        } else {
+//            if (child->is_file) father->has_files = true;
+
+        father->children.insert(father->children.begin() + idx, child);
+
+        if (child->is_file) father->has_files = true;
+        return idx;
+
+
+    //        sort(father->children.begin(), father->children.end(), is_smaller);
     }
 
     Bnode *Bnode::remove_child(Bnode *father, const string identity)
@@ -61,9 +82,9 @@ namespace File_process {
 
     }
 
-    bool Bnode::is_smaller(const Bnode *a, const Bnode *b)
+    bool Bnode::is_greater_or_eq(const Bnode *a, const Bnode *b)
     {
-        return a->identity <= b->identity;
+        return a->identity >= b->identity;
     }
 
     Bnode *Bnode::split_node(Bnode *node)

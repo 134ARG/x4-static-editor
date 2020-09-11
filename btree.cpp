@@ -1,5 +1,6 @@
 #include "btree.h"
 #include <algorithm>
+#include <vector>
 #include <iostream>
 #include <string>
 
@@ -57,8 +58,19 @@ namespace File_process {
 //                update_greatest_identity(key);
 //            }
             vector<Bnode *> routine = find_routine(key);
+            Bnode *file_hub = routine.back();
 
-            Bnode::add_child(routine.back(), new Bnode(file_obj));
+            size_t file_node_idx = Bnode::add_child(file_hub, new Bnode(file_obj));
+//            file_hub->has_files = true;
+
+            if (Bnode::get_size(file_hub) > 1) {
+                if (file_node_idx != file_hub->children.size() - 1) {
+                    Vfile::insert_to_llist(file_obj, nullptr, file_hub->children[file_node_idx+1]->file);
+                } else {
+                    Vfile::insert_to_llist(file_obj, file_hub->children[file_node_idx-1]->file, nullptr);
+                }
+            }
+
             for (auto i = routine.rbegin(); i < routine.rend(); i++) {
                 rearrange_by_order(*i);
             }

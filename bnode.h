@@ -13,6 +13,7 @@ namespace File_process {
     public:
         Bnode(string id) : identity(id) {}
         Bnode(Vfile *file_obj) : identity(file_obj->path), is_file(true), file(file_obj) {}
+        Bnode(Bnode *node) : identity(node->identity), has_files(node->has_files), is_file(node->is_file) {}
     //    Bnode(Bnode *child) : identity(child->file->path), children{child} { add_child(this, child); }
         ~Bnode();
 
@@ -23,7 +24,7 @@ namespace File_process {
         Vfile *file = nullptr;
         vector<Bnode *> children;
 
-        static Bnode *add_child(Bnode *father, Bnode *child);
+        static size_t add_child(Bnode *father, Bnode *child);
         static Bnode *remove_child(Bnode *father, const string identity);
         static bool is_oversize(const Bnode *node, size_t size);
         static size_t get_size(const Bnode *node);
@@ -37,7 +38,7 @@ namespace File_process {
         static Bnode *get_mid(const Bnode *node);
         static void update_identity(Bnode *start);
 
-        static bool is_smaller(const Bnode *a, const Bnode *b);
+        static bool is_greater_or_eq(const Bnode *a, const Bnode *b);
     };
 }
 

@@ -24,19 +24,43 @@ int main()
 
     cout << "File sreach test starts." << endl;
     vector<File_process::Vfile *> search_test = cat_file->files_seq;
-    reverse(search_test.begin(), search_test.end());
+//    reverse(search_test.begin(), search_test.end());
+
+
     for (auto j : search_test) {
-        cout << "Finding file : " <<  j->path << endl;
+//        cout << "Finding file : " <<  j->path << endl;
 
         auto start2 = chrono::steady_clock::now();
         auto file = cat_file->find_file(j->path);
         auto end2 = chrono::steady_clock::now();
         auto time2  = chrono::duration_cast<chrono::milliseconds>(end2 - start2);
+
+
 //        cout << "time: " << time2.count() << endl;
         time_sum += time2.count();
         cout << "Result : " << file->path << " " << file->size << " " << file->offset << " " << file->utc_time << endl;
     }
 
+    File_process::Vfile *current = cat_file->files_seq.front();
+    int idx = 1;
+    while (current->next != nullptr) {
+//        cout << idx++ << endl;
+        if (current->path > current->next->path) {
+            cout << "ERRORERRORERROR!" << endl;
+        }
+        current = current->next;
+    }
+
+    for (auto k : cat_file->files_seq) {
+        if (k->next == nullptr) {
+
+            cout << "Null next found." << endl;
+            cout << k->path << endl;
+        } else if (k->prev == nullptr) {
+            cout << "Null prev found." << endl;
+            cout << k->path << endl;
+        }
+    }
     cout << "Read time :" << time.count() << endl;
     cout << "Search consumed : " << time_sum << endl;
     cout << fixed << "Average : " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
