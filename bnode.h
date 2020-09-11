@@ -24,13 +24,13 @@ namespace File_process {
         Vfile *file = nullptr;
         vector<Bnode *> children;
 
-        static size_t add_child(Bnode *father, Bnode *child);
-        static Bnode *remove_child(Bnode *father, const string identity);
-        static Bnode *remove_children(Bnode *father, size_t i, size_t j);
-        static bool is_oversize(const Bnode *node, size_t size);
-        static size_t get_size(const Bnode *node);
-        static Bnode *split_node(Bnode *node);
-        static Bnode *find_node(Bnode *node, string identity);
+        size_t add_child(Bnode *child);
+        Bnode *remove_child(const string identity);
+        Bnode *remove_children(size_t i, size_t j);
+        bool is_oversize(size_t size);
+        size_t get_size();
+        Bnode *split_node();
+        Bnode *find_node(string identity);
 
         Vfile *get_smallest_file();
         Vfile *get_greatest_file();

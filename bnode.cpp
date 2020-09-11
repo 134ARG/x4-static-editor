@@ -10,19 +10,19 @@ namespace File_process {
         }
     }
 
-    size_t Bnode::add_child(Bnode *father, Bnode *child)
+    size_t Bnode::add_child(Bnode *child)
     {
-        child->father = father;
-        update_identity(child);
-        father->children.push_back(child);
+        child->father = this;
+        update_identity(child);             // to be refactored.
+        children.push_back(child);
 
-        size_t idx = get_size(father) - 1;
+        size_t idx = get_size() - 1;
         while (idx
-               && is_greater(father->children[idx-1], father->children[idx])) {
-            swap(father->children[idx-1], father->children[idx]);
+               && is_greater(children[idx-1], children[idx])) {
+            swap(children[idx-1], children[idx]);
             idx--;
         }
-        if (child->is_file) father->has_files = true;
+        if (child->is_file) has_files = true;
 
         return idx;
 
@@ -30,35 +30,35 @@ namespace File_process {
     //        sort(father->children.begin(), father->children.end(), is_smaller);
     }
 
-    Bnode *Bnode::remove_child(Bnode *father, const string identity)
+    Bnode *Bnode::remove_child(const string identity)
     {
-        for (auto i = father->children.begin(); i < father->children.end(); i++) {
+        for (auto i = children.begin(); i < children.end(); i++) {
             if ((*i)->identity == identity) {
                 delete *i;
-                father->children.erase(i);
-                return father;
+                children.erase(i);
+                return this;
             }
         }
         return nullptr;
     }
 
-    Bnode *Bnode::remove_children(Bnode *father, size_t i, size_t j)
+    Bnode *Bnode::remove_children(size_t i, size_t j)
     {
-        if (father && i < get_size(father) && j < get_size(father)) {
-            father->children.erase(father->children.cbegin()+i, father->children.cbegin()+j);
+        if (i < get_size() && j < get_size()) {
+            children.erase(children.cbegin()+i, children.cbegin()+j);
         }
 
-        return father;
+        return this;
     }
 
-    bool Bnode::is_oversize(const Bnode *node, size_t size)
+    bool Bnode::is_oversize(size_t size)
     {
-        return size < node->children.size();
+        return size < children.size();
     }
 
-    size_t Bnode::get_size(const Bnode *node)
+    size_t Bnode::get_size()
     {
-        return node->children.size();
+        return children.size();
     }
 
     Bnode *Bnode::get_mid(const Bnode *node)
@@ -82,21 +82,21 @@ namespace File_process {
         return a->identity > b->identity;
     }
 
-    Bnode *Bnode::split_node(Bnode *node)
+    Bnode *Bnode::split_node()
     {
         Bnode *left_half = new Bnode(/*get_mid(node)->identity*/"");
 
-        for (size_t i = 0; i <= get_size(node)/2; i++){
-            add_child(left_half, node->children.front());
-            node->children.erase(node->children.begin());
+        for (size_t i = 0; i <= get_size()/2; i++){
+            left_half->add_child(children.front());
+            children.erase(children.begin());
         }
 
         return left_half;
     }
 
-    Bnode *Bnode::find_node(Bnode *node, string identity)
+    Bnode *Bnode::find_node(string identity)
     {
-        for (auto i : node->children) {
+        for (auto i : children) {
             if (i->identity == identity) {
                 return i;
             }
