@@ -26,10 +26,12 @@ namespace File_process {
 
         vector<Bnode *>::const_iterator add_child(Bnode *child);
         Bnode *remove_child(const string identity);
+        Bnode *remove_child(const Bnode *node);
         Bnode *remove_children(size_t i, size_t j);
         bool is_oversize(size_t size);
         size_t get_size();
-        Bnode *split_node();
+        Bnode *split_to_left();
+        static Bnode *merge_to_left(Bnode *left, Bnode *right);
         Bnode *find_node(string identity);
 
         Bnode *find_floor(const string &id);

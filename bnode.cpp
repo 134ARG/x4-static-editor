@@ -42,6 +42,18 @@ namespace File_process {
         return nullptr;
     }
 
+    Bnode *Bnode::remove_child(const Bnode *node)
+    {
+        for (auto i = children.begin(); i != children.end(); i++) {
+            if (*i == node) {
+                delete *i;
+                children.erase(i);
+                return this;
+            }
+        }
+        return nullptr;
+    }
+
     Bnode *Bnode::remove_children(size_t i, size_t j)
     {
         if (i < get_size() && j < get_size()) {
@@ -82,7 +94,7 @@ namespace File_process {
         return a->identity > b->identity;
     }
 
-    Bnode *Bnode::split_node()
+    Bnode *Bnode::split_to_left()
     {
         Bnode *left_half = new Bnode(/*get_mid(node)->identity*/"");
 
@@ -92,6 +104,16 @@ namespace File_process {
         }
 
         return left_half;
+    }
+
+    Bnode *Bnode::merge_to_left(Bnode *left, Bnode *right)
+    {
+        for (auto i : right->children) {
+            left->children.push_back(i);
+        }
+        left->identity = right->identity;
+
+        return left;
     }
 
     Bnode *Bnode::find_node(string identity)
