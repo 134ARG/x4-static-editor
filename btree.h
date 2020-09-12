@@ -43,13 +43,16 @@ namespace File_process {
 
 //        Bnode *binary_find(Bnode *node, const string &key);
 
+        string id_upper_bound();
+        string id_lower_bound();
+
         void update_node_chain_after_add(Bnode *start);
         bool update_routine_after_del(Bnode *start);
 
         const string generate_upper_bound(const string &partial);
 
         inline bool is_identity_exceeded(const string &key);
-        Bnode *update_greatest_identity_to_hub(const string &new_id);
+        Bnode *update_greatest_identity_from_hub(const string &new_id);
 
 
     };

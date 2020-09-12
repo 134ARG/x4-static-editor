@@ -140,27 +140,5 @@ namespace File_process {
             return *i;
         }
     }
-
-    Vfile *Bnode::get_smallest_file()
-    {
-        Bnode * file_node = this;
-        while (!file_node->is_file) {
-            file_node = file_node->children.front();
-        }
-
-        return file_node->file;
-    }
-
-    Vfile *Bnode::get_greatest_file()
-    {
-        Bnode * file_node = this;
-        while (!file_node->is_file) {
-            file_node = file_node->children.back();
-        }
-
-        return file_node->file;
-    }
-
 }
-
 

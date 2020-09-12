@@ -13,6 +13,7 @@ int main()
 
 //    cout << "Enter Path:";
 //    cin >> path2;
+
     long time_sum = 0;
     string file_path = "assets/structures/buildmodule/buildmodule_arg_equip_l_data/assets_structures_buildmodule_buildmodule_arg_equip_l-lod0.xmf";
 
@@ -20,9 +21,9 @@ int main()
     auto cat_file = File_process::File_reader::construct_btree("/home/xen134/01.cat");
     auto end = chrono::steady_clock::now();
     auto time  = chrono::duration_cast<chrono::milliseconds>(end - start);
+    cout << "Initializing finished." << endl;
+    cout << "Reading time :" << time.count() << endl << endl;
     //i->print_ele();
-
-
 
     // Search test - reverse order.
     cout << "File sreach test starts." << endl;
@@ -30,7 +31,6 @@ int main()
     reverse(search_test.begin(), search_test.end());
     int search_successes = 0;
     for (auto j : search_test) {
-        cout << endl << "Finding file : " <<  j->path << endl;
 
         auto start2 = chrono::steady_clock::now();
         auto file = cat_file->find_file(j->path);
@@ -40,10 +40,12 @@ int main()
         if (file->path == j->path) search_successes++;
 
         time_sum += time2.count();
-        cout << "Result : " << file->path << " " << file->size << " " << file->offset << " " << file->utc_time << endl;
     }
-
-
+    cout << "All serach trials : " << cat_file->files_seq.size() << endl;
+    cout << "Successful : " << search_successes << endl;
+    cout << "Reverse search time : " << time_sum << endl;
+    cout << fixed << "Average search time: " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
+    cout << endl;
 
     // linked list test.
     for (auto k : cat_file->files_seq) {
@@ -58,31 +60,27 @@ int main()
             throw "error";
         }
     }
-
-    // partial find test
-    auto result_bound = cat_file->find_partial("a");
-    cout << "Partial match results : " << endl;
-    int idx = 1;
-    for (auto i = result_bound[0]; i && i->path <= result_bound[1]->path; i = i->next) {
-        cout << idx++ << " : " << i->path << " " << i->size << " " << i->offset << endl;
-    }
-
+    // linked list test 2
     int num = 0;
     File_process::Vfile *c = cat_file->head;
     while (c != nullptr) {
         num++;
         c = c->next;
     }
+    cout << "vfiles in linked list : " << num << endl << endl;
 
-    cout << num << endl;
 
-    // overall report.
-    cout << "Read time :" << time.count() << endl;
-    cout << "All serach trials : " << cat_file->files_seq.size() << endl;
-    cout << "Successful : " << search_successes << endl;
-    cout << "Reverse search time : " << time_sum << endl;
-    cout << fixed << "Average search time: " << (double)time_sum/(double)cat_file->files_seq.size() << endl;
-    cout << "Partial match found : " << idx-1 << " results." << endl;
+    // partial find test
+    string partial = "asset";
+    auto result_bound = cat_file->find_partial(partial);
+    cout << "Partial match keyword : " << partial << endl;
+    cout << "Partial match results : " << endl;
+    int idx = 1;
+    for (auto i = result_bound[0]; i && i->path <= result_bound[1]->path; i = i->next) {
+        cout << idx++ << " : " << i->path << " " << i->size << " " << i->offset << endl;
+    }
+    cout << "Partial match found : " << idx-1 << " results." << endl << endl;
+
 
     cout << "Finished. Enter to exit." << endl;
     cin.get();

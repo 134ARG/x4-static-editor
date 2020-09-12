@@ -35,8 +35,6 @@ namespace File_process {
         Bnode *find_node(string identity);
 
         Bnode *find_floor(const string &id);
-        Vfile *get_smallest_file();
-        Vfile *get_greatest_file();
 
 
     //    static bool is_file(Bnode *node);

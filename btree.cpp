@@ -1,7 +1,6 @@
 #include "btree.h"
 #include <algorithm>
 #include <vector>
-#include <iostream>
 #include <string>
 
 namespace File_process {
@@ -39,10 +38,9 @@ namespace File_process {
 
     array<Vfile *, 2> Btree::find_range(const string &id_start, const string &id_end)
     {
-        cout << id_end << endl;
-        if (id_start > id_end || id_start > root->identity) {
+        if (id_start > id_end || id_start > id_upper_bound() || id_end < id_lower_bound()) {
             return array<Vfile *, 2>{};
-        } else if (id_end > root->identity) {
+        } else if (id_end > id_upper_bound()) {
             return find_range(id_start, root->identity);
         }
         else {
@@ -79,7 +77,7 @@ namespace File_process {
             Bnode *files_hub = nullptr;
 
             if (is_identity_exceeded(key)) {
-                files_hub = update_greatest_identity_to_hub(key);
+                files_hub = update_greatest_identity_from_hub(key);
             } else {
                 files_hub =  find_files_hub(key);
             }
@@ -126,6 +124,16 @@ namespace File_process {
         return pos;
     }
 
+    string Btree::id_upper_bound()
+    {
+        return root->identity;
+    }
+
+    string Btree::id_lower_bound()
+    {
+        return head->path;
+    }
+
     int Btree::enum_index_node(Bnode *start)
     {
         int i = start->get_size();
@@ -147,24 +155,11 @@ namespace File_process {
                 node->father->add_child(node);
                 root = node->father;
             }
-            Bnode *left_half = node->split_node();
+            Bnode *left_half = node->split_to_left();
             node->father->add_child(left_half);
 
             node = node->father;
         }
-//        if (node && Bnode::is_oversize(node, order)) {
-//            if (!node->father) {
-//                node->father = new Bnode(node->identity);
-//                Bnode::add_child(node->father, node);
-//                root = node->father;
-//            }
-//            Bnode *left_half = Bnode::split_node(node);
-//            Bnode::add_child(node->father, left_half);
-
-//            return true;
-//        } else {
-//            return false;
-        //        }
     }
 
     bool Btree::update_routine_after_del(Bnode *start)
@@ -180,7 +175,7 @@ namespace File_process {
     }
 
 
-    Bnode *Btree::update_greatest_identity_to_hub(const string &new_id)
+    Bnode *Btree::update_greatest_identity_from_hub(const string &new_id)
     {
         Bnode *pos = root;
         while (!pos->is_file) {
