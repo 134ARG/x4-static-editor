@@ -27,6 +27,7 @@ int main()
 
     // Search test - reverse order.
     long time_sum = 0;
+
     cout << "File sreach test starts." << endl;
     vector<File_process::Vfile *> search_test = cat_file->files_seq;
     reverse(search_test.begin(), search_test.end());
@@ -74,6 +75,7 @@ int main()
 
     // partial find test
     string partial = "b";
+
     auto result_bound = cat_file->find_partial(partial);
     cout << "Partial match keyword : " << partial << endl;
     cout << "Partial match results : " << endl;
