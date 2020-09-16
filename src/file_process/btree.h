@@ -16,6 +16,8 @@ namespace File_process {
     public:
         Btree(string path) : dat_path(path), order(DEFAULT_BTREE_ORDER) {}
         Btree(string path, size_t o) : dat_path(path), order(o) {}
+        Btree(const Btree &) = delete;
+        Btree &operator=(const Btree &) = delete;
         ~Btree();
 
         Bnode *root = nullptr;

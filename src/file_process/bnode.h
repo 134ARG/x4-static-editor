@@ -15,6 +15,8 @@ namespace File_process {
         Bnode(Vfile *file_obj) : identity(file_obj->path), is_file(true), file(file_obj) {}
 //        Bnode(Bnode *node) : identity(node->identity), has_files(node->has_files), is_file(node->is_file) {}
     //    Bnode(Bnode *child) : identity(child->file->path), children{child} { add_child(this, child); }
+        Bnode(const Bnode &) = delete;
+        Bnode &operator=(const Bnode &) = delete;
         ~Bnode();
 
         string identity;

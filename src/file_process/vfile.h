@@ -15,6 +15,8 @@ namespace File_process {
         Vfile(const Vfile *vfile) :
             path(vfile->path), size(vfile->size), offset(vfile->offset), utc_time(vfile->utc_time), md5_val(vfile->md5_val) {}
 
+        Vfile(const Vfile &) = delete;
+        Vfile &operator=(Vfile &) = delete;
     //    bool operator==(Vfile &f);
         const string path;
         const long size;
