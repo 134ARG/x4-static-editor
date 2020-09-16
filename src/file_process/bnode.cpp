@@ -24,9 +24,6 @@ namespace File_process {
         if (child->is_file) has_files = true;
 
         return children.cbegin() + idx;
-
-
-    //        sort(father->children.begin(), father->children.end(), is_smaller);
     }
 
     Bnode *Bnode::remove_child(const string identity)
