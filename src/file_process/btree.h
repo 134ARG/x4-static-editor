@@ -54,7 +54,7 @@ namespace File_process {
         const string generate_upper_bound(const string &partial);
 
         inline bool is_identity_exceeded(const string &key);
-        Bnode *update_greatest_identity_from_hub(const string &new_id);
+        Bnode *update_greatest_identity_to_hub(const string &new_id);
 
 
     };

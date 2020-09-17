@@ -77,7 +77,7 @@ namespace File_process {
             Bnode *files_hub = nullptr;
 
             if (is_identity_exceeded(key)) {
-                files_hub = update_greatest_identity_from_hub(key);
+                files_hub = update_greatest_identity_to_hub(key);
             } else {
                 files_hub =  find_files_hub(key);
             }
@@ -177,7 +177,7 @@ namespace File_process {
     }
 
 
-    Bnode *Btree::update_greatest_identity_from_hub(const string &new_id)
+    Bnode *Btree::update_greatest_identity_to_hub(const string &new_id)
     {
         Bnode *pos = root;
         while (!pos->is_file) {
