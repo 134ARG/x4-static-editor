@@ -64,14 +64,24 @@ int main()
         }
     }
     // linked list test 2
-    int num = 0;
+    int num_forward = 0;
+    int num_backward = 0;
     File_process::Vfile *c = cat_file->head;
     while (c != nullptr) {
-        num++;
+        num_forward++;
         c = c->next;
     }
-    cout << "vfiles in linked list : " << num << endl << endl;
+    c = cat_file->tail;
+    while (c != nullptr) {
+        num_backward++;
+        c = c->prev;
+    }
+    cout << "vfiles in linked list (forward) : " << num_forward << endl;
+    cout << "vfiles in linked list (backward) : " << num_backward << endl << endl;
 
+
+    // depth
+    cout << " depth : " << cat_file->depth() << endl << endl;
 
     // partial find test
     string partial = "b";
