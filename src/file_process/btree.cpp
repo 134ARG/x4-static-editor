@@ -92,6 +92,8 @@ namespace File_process {
                 } else {
                     Vfile::insert_to_llist(file, (*(iter-1))->file, (*(iter+1))->file);
                 }
+            } else {
+                int do_nothing = 0;
             }
 
             update_node_chain_after_add(files_hub);
@@ -141,6 +143,18 @@ namespace File_process {
             for (auto j : start->children) {
                 i += enum_index_node(j);
             }
+        }
+
+        return i;
+    }
+
+    int Btree::depth()
+    {
+        int i = 0;
+        Bnode *start = root;
+        while (!start->has_files) {
+            i++;
+            start = start->children.front();
         }
 
         return i;

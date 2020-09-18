@@ -1,7 +1,7 @@
 #ifndef BTREE_H
 #define BTREE_H
 
-#define DEFAULT_BTREE_ORDER 20
+#define DEFAULT_BTREE_ORDER 30
 
 #include <array>
 #include <vector>
@@ -36,6 +36,7 @@ namespace File_process {
 //        void print_ele();
 
         int enum_index_node(Bnode *start);
+        int depth();
 
     private:
         long dat_size = 0;
