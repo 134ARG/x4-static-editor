@@ -1,15 +1,18 @@
 # x4-static-editor
 Mod tool for x4.
+
 Qt creator proj.
 
-Finished:
+------
+
+##Finished:
 
 1. .cat reading
 2. vfile indexing
 3. vfile search
 4. index & vfile remove (naive)
 
-To be implemented:
+##To be implemented:
 
 
 1. file index remove (optimized)
